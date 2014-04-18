@@ -22,7 +22,7 @@ public class Splash extends Activity {
 		Thread timer = new Thread() {
 			public void run() {
 				try {
-					sleep(30);
+					sleep(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} finally {
