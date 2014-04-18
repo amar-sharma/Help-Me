@@ -44,8 +44,8 @@
         <Button
             android:id="@+id/bSatisfy"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="260dp"
-            android:layout_height="96dp"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:text="Satisfaction with life"
@@ -53,8 +53,8 @@
 
         <Button
             android:id="@+id/bPosNeg"
-            android:layout_width="276dp"
-            android:layout_height="82dp"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="140dp"
             android:text="Positive-Negative effects"

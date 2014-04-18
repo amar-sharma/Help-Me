@@ -1,14 +1,22 @@
 package com.iitpatna.helpme;
 
-import com.iitpatna.helpme.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+import com.iitpatna.helpme.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -17,6 +25,10 @@ import android.view.View;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends Activity {
+
+	Button Call, pnEffect, satisfaction;
+	boolean isPhoneCalling = false;
+	String url;
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -114,8 +126,81 @@ public class FullscreenActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
+		findViewById(R.id.bCall).setOnTouchListener(mDelayHideTouchListener);
+		init();
+	}
+
+	private void init() {
+		// TODO Auto-generated method stub
+		Call = (Button) findViewById(R.id.bCall);
+		pnEffect = (Button) findViewById(R.id.bPosNeg);
+		satisfaction = (Button) findViewById(R.id.bSatisfy);
+		Call.setOnClickListener(l);
+		pnEffect.setOnClickListener(l);
+		satisfaction.setOnClickListener(l);
+		EndCallListener callListener = new EndCallListener();
+		TelephonyManager mTM = (TelephonyManager) this
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		mTM.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+	}
+
+	OnClickListener l = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+
+			switch (v.getId()) {
+			case R.id.bCall:
+				url = "tel:09470025929";
+				Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
+				startActivity(intent);
+				break;
+			case R.id.bSatisfy:
+				Intent i = new Intent(FullscreenActivity.this, Satisfaction.class);
+				startActivity(i);
+				break;
+			case R.id.bPosNeg:
+				finish();
+				break;
+			}
+		}
+	};
+
+	private class EndCallListener extends PhoneStateListener {
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber) {
+			if (TelephonyManager.CALL_STATE_RINGING == state) {
+				// phone ringing
+
+			}
+
+			if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
+				// active
+				isPhoneCalling = true;
+			}
+
+			if (TelephonyManager.CALL_STATE_IDLE == state) {
+				// run when class initial and phone call ended,
+				// need detect flag from CALL_STATE_OFFHOOK
+
+				if (isPhoneCalling
+						&& incomingNumber == Uri.parse(url).toString()) {
+
+					// restart app
+					// Intent i = getBaseContext().getPackageManager()
+					// .getLaunchIntentForPackage(
+					// getBaseContext().getPackageName());
+					Intent i = new Intent(FullscreenActivity.this,
+							FullscreenActivity.class);
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(i);
+
+					isPhoneCalling = false;
+				}
+
+			}
+		}
 	}
 
 	@Override
